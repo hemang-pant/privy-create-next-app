@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getAccessToken, usePrivy } from "@privy-io/react-auth";
 import Head from "next/head";
+import { useBalance, useCaSdkAuth } from "../components/ca";
 
 async function verifyToken() {
   const url = "/api/verify";
@@ -49,10 +50,12 @@ export default function DashboardPage() {
   const email = user?.email;
   const phone = user?.phone;
   const wallet = user?.wallet;
-
   const googleSubject = user?.google?.subject || null;
   const twitterSubject = user?.twitter?.subject || null;
   const discordSubject = user?.discord?.subject || null;
+  useCaSdkAuth();
+  const balances = useBalance();
+  
 
   return (
     <>
@@ -215,6 +218,14 @@ export default function DashboardPage() {
             </p>
             <pre className="max-w-4xl bg-slate-700 text-slate-50 font-mono p-4 text-xs sm:text-sm rounded-md mt-2">
               {JSON.stringify(user, null, 2)}
+              {
+                balances ? (
+                  <div>
+                    <p>Unified Balances</p>
+                    <pre>{JSON.stringify(balances, null, 2)}</pre>
+                  </div>
+                ) : null
+              }
             </pre>
           </>
         ) : null}
